@@ -1,29 +1,3 @@
-/*
-  Button
-
- Turns on and off a light emitting diode(LED) connected to digital
- pin 13, when pressing a pushbutton attached to pin 2.
-
-
- The circuit:
- * LED attached from pin 13 to ground
- * pushbutton attached to pin 2 from +5V
- * 10K resistor attached to pin 2 from ground
-
- * Note: on most Arduinos there is already an LED on the board
- attached to pin 13.
-
-
- created 2005
- by DojoDave <http://www.0j0.org>
- modified 30 Aug 2011
- by Tom Igoe
-
- This example code is in the public domain.
-
- http://www.arduino.cc/en/Tutorial/Button
- */
-
 const int SWITCH_A = 28;
 const int SWITCH_B = 30;
 const int SWITCH_C = 32;
@@ -44,6 +18,19 @@ int stateD = 0;
 int stateE = 0;
 int stateF = 0;
 
+#include "pitches.h"
+
+// notes in the melody:
+int melody[] = {
+  NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
+};
+
+// note durations: 4 = quarter note, 8 = eighth note, etc.:
+int noteDurations[] = {
+  4, 8, 8, 4, 4, 4, 4, 4
+};
+
+
 void setup() {
   Serial.begin(9600);
   
@@ -57,10 +44,26 @@ void setup() {
   pinMode(LED_A, OUTPUT);
   pinMode(LED_B, OUTPUT);
   pinMode(LED_C, OUTPUT);
+
+  // iterate over the notes of the melody:
+  for (int thisNote = 0; thisNote < 8; thisNote++) {
+
+    // to calculate the note duration, take one second
+    // divided by the note type.
+    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+    int noteDuration = 1000 / noteDurations[thisNote];
+    tone(8, melody[thisNote], noteDuration);
+
+    // to distinguish the notes, set a minimum time between them.
+    // the note's duration + 30% seems to work well:
+    int pauseBetweenNotes = noteDuration * 1.30;
+    delay(pauseBetweenNotes);
+    // stop the tone playing:
+    noTone(8);
+  }
 }
 
 void loop() {
-  // read the state of the pushbutton value:
   stateA = digitalRead(SWITCH_A);
   stateB = digitalRead(SWITCH_B);
   stateC = digitalRead(SWITCH_C);
