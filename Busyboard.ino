@@ -41,6 +41,10 @@ void setup() {
 }
 
 void loop() {
+   // Input state trackers
+   int switch_state[] = {0, 0, 0};
+   int button_state[] = {0, 0, 0};
+
    // Read inputs
    for (int i = 0; i < 3; i++) {
       switch_state[i] = digitalRead(SWITCH[i]);

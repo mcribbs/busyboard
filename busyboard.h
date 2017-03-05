@@ -15,10 +15,6 @@ const int LED_BLU[] = {32, 33, 34, 35, 36};
 const int LED_SAG[] = {39, 40, 41, 38, 37, 44, 45, 46, 47, 48, 49, 50, 42, 43};
 const int SPEAKER = 8;
 
-// Input state trackers
-int switch_state[] = {0, 0, 0};
-int button_state[] = {0, 0, 0};
-
 // notes in the melody:
 int melody[] = {
   NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0, NOTE_B3, NOTE_C4
