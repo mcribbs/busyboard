@@ -25,4 +25,8 @@ int noteDurations[] = {
   4, 8, 8, 4, 4, 4, 4, 4
 };
 
+// Functions
+void readInputs();
+void doTests();
+
 #endif // BUSYBOARD_H_
