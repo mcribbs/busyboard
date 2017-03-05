@@ -36,7 +36,7 @@ void setup() {
        pinMode(BUTTON[i], INPUT);
     }
   }
-  
+
   // Setup outputs
   for (int i = 0; i < 5; i++) {
     pinMode(LED_RED[i], OUTPUT);
@@ -71,7 +71,7 @@ void loop() {
     if (!BUTTON_ANALOG[i]) {
        button_state[i] = digitalRead(BUTTON[i]);
     } else {
-      button_state[i] = analogRead(BUTTON[i]) < 5 ? LOW : HIGH;  
+      button_state[i] = analogRead(BUTTON[i]) < 5 ? LOW : HIGH;
     }
   }
 
@@ -83,7 +83,7 @@ void loop() {
   Serial.print(button_state[1]); Serial.print(", ");
   Serial.print(button_state[2]); Serial.println();
   */
-  
+
   for (int i = 0; i < 5; i++) {
     digitalWrite(LED_BLU[i], !switch_state[0] ? HIGH : LOW);
     digitalWrite(LED_YEL[i], !switch_state[1] ? HIGH : LOW);
