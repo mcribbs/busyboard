@@ -30,6 +30,10 @@ int bttn[] = {0, 0, 0};
 
 bool testMode = false;
 
+bool playing = false;
+int currentNote = 0;
+unsigned long currentNoteStart = 0;
+
 void loop() {
 
    readInputs();
@@ -40,6 +44,13 @@ void loop() {
    Serial.print(bttn[0]); Serial.print(", ");
    Serial.print(bttn[1]); Serial.print(", ");
    Serial.print(bttn[2]); Serial.println();
+   Serial.print(playing); Serial.print(", ");
+   Serial.print(currentNote); Serial.print(", ");
+   Serial.print(currentNoteStart); Serial.print(", ");
+
+   if (playing) {
+      play();
+   }
 
    if (testMode) {
       doTests();
@@ -96,30 +107,43 @@ void doTests() {
    }
    if (swch[1]) {
       // test sound
-      if (bttn[1]) {
-         // iterate over the notes of the melody:
-         for (int thisNote = 0; thisNote < 8; thisNote++) {
-
-            // to calculate the note duration, take one second
-            // divided by the note type.
-            //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-            int noteDuration = 1000 / noteDurations[thisNote];
-            tone(SPEAKER, melody[thisNote], noteDuration);
-
-            // to distinguish the notes, set a minimum time between them.
-            // the note's duration + 30% seems to work well:
-            int pauseBetweenNotes = noteDuration * 1.30;
-            delay(pauseBetweenNotes);
-            // stop the tone playing:
-            noTone(SPEAKER);
-         }
+      if (bttn[1] && !playing) {
+         playing = true;
       }
+   }
+   // test column leds
+   for (int i = 0; i < 5; i++) {
+      digitalWrite(LED_BLU[i], bttn[0] ? HIGH : LOW);
+      digitalWrite(LED_YEL[i], bttn[1] ? HIGH : LOW);
+      digitalWrite(LED_RED[i], bttn[2] ? HIGH : LOW);
+   }
+}
+
+void play() {
+   unsigned long currentMillis = millis();
+   // First time though - Start us off
+   if (currentNote == 0 && currentNoteStart == 0) {
+      currentNoteStart = currentMillis;
+      tone(SPEAKER, melody[currentNote], 100);
+   } else if (currentNote > 8) {
+      // We're done!
+      playing = false;
+      currentNote = 0;
+      currentNoteStart = 0;
    } else {
-      // test column leds
-      for (int i = 0; i < 5; i++) {
-         digitalWrite(LED_BLU[i], bttn[0] ? HIGH : LOW);
-         digitalWrite(LED_YEL[i], bttn[1] ? HIGH : LOW);
-         digitalWrite(LED_RED[i], bttn[2] ? HIGH : LOW);
+      unsigned long desiredNoteDuration = 1000 / noteDurations[currentNote];
+      unsigned long totalDesiredDuration = desiredNoteDuration * 1.30;
+      unsigned long currentProgress = currentMillis - currentNoteStart;
+
+      if (currentProgress < desiredNoteDuration) {
+         // Not done yet, keep playing...
+         tone(SPEAKER, melody[currentNote], 100);
+      } else if (currentProgress > desiredNoteDuration && currentProgress < totalDesiredDuration) {
+         // Done with note, pause...
+         noTone(SPEAKER);
+      } else {
+         currentNote++;
+         currentNoteStart = currentMillis;
       }
    }
 }
