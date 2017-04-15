@@ -48,22 +48,40 @@ void loop() {
    Serial.print(currentNote); Serial.print(", ");
    Serial.print(currentNoteStart); Serial.print(", ");
 
-   if (playing) {
-      play();
-   }
-
+   // Handle all the async tasks
    if (testMode) {
       doTests();
       return;
    }
 
+   if (playing) {
+      play();
+   }
+
+   // State handling
    if (!swch[2]) {
-      // "off mode", just listen for test mode trigger
+      // "Off mode", just listen for test mode trigger
       if (bttn[0] && bttn[1] && bttn[2]) {
          testMode = true;
       }
    } else {
-      // do all the active things
+      // Do all the active things
+      if (!swch[0] && !swch[1]) {
+         // State 1 - Off/Off
+
+      }
+      else if (!swch[0] && swch[1]) {
+         // State 2 - Off/On
+
+      }
+      else if (swch[0] && !swch[1]) {
+         // State 3 - On/Off
+
+      }
+      else if (swch[0] && swch[1]) {
+         // State 4 - On/On
+
+      }
    }
 
    delay(1);
